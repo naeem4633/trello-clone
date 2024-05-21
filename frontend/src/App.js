@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import axios from 'axios';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import { useFirebase } from './context/firebase';
+import { useNavigate } from 'react-router-dom';
+import ErrorPage from './pages/ErrorPage';
 
 function App() {
+  // const [user, setUser] = useState(null);
+  const firebase = useFirebase();
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="app">
+        <div className="app-body">
+          <Routes>
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
+            <Route path="*" element={<ErrorPage/>} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
