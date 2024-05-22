@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import DATA from "../data";
 
 const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
   const titleFilter = columnFilters.find((f) => f.id === "title")?.value || "";
@@ -29,38 +28,34 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
   };
 
   return (
-    <div className="flex items-center mb-6">
-      <div className="flex items-center">
-        <button className="p-1">
-          <SearchIcon />
-        </button>
+    <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-100 rounded-lg shadow-md">
+      <div className="flex items-center space-x-2">
+        <SearchIcon />
         <input
           type="text"
           placeholder="Task name"
           value={titleFilter}
           onChange={(e) => onFilterChange("title", e.target.value)}
-          className="flex-1 rounded bg-white p-1 border border-gray-600"
+          className="flex-1 rounded bg-white p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex items-center ml-4">
-        <button className="p-1">
-          <SearchIcon />
-        </button>
+      <div className="flex items-center space-x-2">
+        <SearchIcon />
         <input
           type="text"
           placeholder="Description"
           value={descriptionFilter}
           onChange={(e) => onFilterChange("description", e.target.value)}
-          className="flex-1 rounded bg-white p-1 border border-gray-600"
+          className="flex-1 rounded bg-white p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex items-center ml-4">
-        <label htmlFor="boardIdFilter">Board Name:</label>
+      <div className="flex items-center space-x-2">
+        <label htmlFor="boardIdFilter" className="font-medium text-gray-700">Board:</label>
         <select
           id="boardIdFilter"
           value={boardIdFilter}
           onChange={onBoardIdFilterChange}
-          className="rounded bg-white p-1 ml-2"
+          className="rounded bg-white p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All</option>
           {boards.map((board) => (
