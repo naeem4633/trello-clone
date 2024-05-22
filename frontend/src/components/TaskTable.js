@@ -11,31 +11,30 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
-const columns = [
-  {
-    accessorKey: "title",
-    header: "Title",
-    size: 225,
-    enableColumnFilter: true,
-    filterFn: "includesString",
-  },
-  {
-    accessorKey: "dueDate",
-    header: "Due Date",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    size: 225,
-  },
-  {
-    accessorKey: "boardId",
-    header: "Board ID",
-    size: 100,
-  },
-];
-
 const TaskTable = ({tasks, setTasks, boards}) => {
+  const columns = [
+    {
+      accessorKey: "title",
+      header: "Title",
+      size: 225,
+      enableColumnFilter: true,
+      filterFn: "includesString",
+    },
+    {
+      accessorKey: "dueDate",
+      header: "Due Date",
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      size: 225,
+    },
+    {
+      accessorKey: "boardId",
+      header: "Board ID",
+      size: 100,
+    },
+  ];
   const [columnFilters, setColumnFilters] = useState([
     { id: "title", value: "" },
     { id: "description", value: "" },

@@ -7,6 +7,11 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
   const descriptionFilter = columnFilters.find((f) => f.id === "description")?.value || "";
   const [boardIdFilter, setBoardIdFilter] = useState("");
 
+  const getBoardName = (boardId) => {
+    const board = boards.find((b) => b.id === boardId);
+    return board ? board.name : "Unknown";
+  };
+
   const onFilterChange = (id, value) =>
     setColumnFilters((prev) =>
       prev
@@ -18,14 +23,10 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
     );
 
   const onBoardIdFilterChange = (e) => {
-    setBoardIdFilter(e.target.value);
-    onFilterChange("boardId", e.target.value);
+    const boardName = getBoardName(e.target.value);
+    setBoardIdFilter(boardName);
+    onFilterChange("boardId", boardIdFilter);
   };
-
-  const boardIdToNameMap = boards.reduce((map, board) => {
-    map[board.id] = board.name;
-    return map;
-  }, {});
 
   return (
     <div className="flex items-center mb-6">
@@ -35,7 +36,7 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
         </button>
         <input
           type="text"
-          placeholder="Filter by Task name"
+          placeholder="Task name"
           value={titleFilter}
           onChange={(e) => onFilterChange("title", e.target.value)}
           className="flex-1 rounded bg-white p-1 border border-gray-600"
@@ -47,14 +48,14 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
         </button>
         <input
           type="text"
-          placeholder="Filter by Description"
+          placeholder="Description"
           value={descriptionFilter}
           onChange={(e) => onFilterChange("description", e.target.value)}
           className="flex-1 rounded bg-white p-1 border border-gray-600"
         />
       </div>
       <div className="flex items-center ml-4">
-        <label htmlFor="boardIdFilter">Board:</label>
+        <label htmlFor="boardIdFilter">Board Name:</label>
         <select
           id="boardIdFilter"
           value={boardIdFilter}
@@ -62,9 +63,9 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
           className="rounded bg-white p-1 ml-2"
         >
           <option value="">All</option>
-          {tasks.map((task) => (
-            <option key={task.id} value={task.boardId}>
-              {boardIdToNameMap[task.boardId]}
+          {boards.map((board) => (
+            <option key={board.id} value={board.id}>
+              {board.name}
             </option>
           ))}
         </select>
