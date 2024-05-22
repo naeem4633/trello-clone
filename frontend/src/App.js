@@ -11,60 +11,85 @@ import ErrorPage from './pages/ErrorPage';
 function App() {
   // const [user, setUser] = useState(null);
   const firebase = useFirebase();
-  // const [boards, setBoards] = useState([]);
+  const {createBoard, createTask, getAllBoards, getAllTasks, updateTask } = useFirebase();
+  const [boards, setBoards] = useState([]);
   const [tasks, setTasks] = useState([]);
-  const [boards, setBoards] = useState([
-    { name: 'Board 1', tasks: [{ id: 1, name: 'Task 1' }, { id: 2, name: 'Task 2' }] },
-    { name: 'Board 2', tasks: [] },
-    { name: 'Board 3', tasks: [] },
-  ]);
-
-    useEffect(() => {
-      const fetchBoards = async () => {
-        try {
-          const response = await fetch('http://localhost:5000/api/boards');
-          const data = await response.json();
-          setBoards(data);
-        } catch (error) {
-          console.error('Error fetching boards:', error);
-        }
-    };
   
-      fetchBoards();
-    }, []);
-  
-    useEffect(() => {
-      const fetchTasks = async () => {
-        try {
-          const response = await fetch('http://localhost:5000/api/tasks');
-          const data = await response.json();
-          setTasks(data);
-        } catch (error) {
-          console.error('Error fetching tasks:', error);
-        }
-      };
-  
-      fetchTasks();
-    }, []); 
-
-    const onDropTask = (task, boardName) => {
-      const boardIndex = boards.findIndex(board => board.name === boardName);
-    
-      const previousBoardIndex = boards.findIndex(board => board.tasks.some(t => t._id === task.id));
-    
-      const updatedBoards = [...boards];
-    
-      if (previousBoardIndex !== -1) {
-        const taskIndex = updatedBoards[previousBoardIndex].tasks.findIndex(t => t._id === task.id);
-        if (taskIndex !== -1) {
-          updatedBoards[previousBoardIndex].tasks.splice(taskIndex, 1);
-        }
+  useEffect(() => {
+    const fetchBoardsAndTasks = async () => {
+      try {
+        const boardsData = await getAllBoards();
+        const tasksData = await getAllTasks();
+        setBoards(boardsData);
+        setTasks(tasksData);
+      } catch (error) {
+        console.error("Error fetching boards and tasks:", error);
       }
-    
-      updatedBoards[boardIndex].tasks.push(task);
-    
-      setBoards(updatedBoards);
     };
+  
+    fetchBoardsAndTasks();
+  }, []);
+
+
+  const handleTasksChange = (updatedTask) => {
+    setTasks(tasks.map(task => (task.id === updatedTask.id ? updatedTask : task)));
+  };
+
+
+  // useEffect(() => {
+  //   const initializeData = async () => {
+  //     try {
+  //       // Import mock data and send to Firestore
+  //       const { mockBoards } = require('./data');
+  //       for (const board of mockBoards) {
+  //         const boardId = await createBoard(board.name);
+  //         for (const task of board.tasks) {
+  //           await createTask(boardId, task);
+  //         }
+  //         console.log(`Successfully created board: ${board.name}`);
+  //       }
+  //       console.log('Data initialization completed successfully');
+  //     } catch (error) {
+  //       console.error('Error initializing data:', error);
+  //     }
+  //   };
+
+  //   initializeData();
+  // }, []);
+
+
+  const onDropTask = async (task, boardName) => {
+    const boardIndex = boards.findIndex(board => board.name === boardName);
+    if (boardIndex === -1) return;
+  
+    const previousBoardIndex = boards.findIndex(board => board.tasks.some(t => t.id === task.id));
+    if (previousBoardIndex === -1) return;
+  
+    const updatedBoards = [...boards];
+  
+    const taskIndex = updatedBoards[previousBoardIndex].tasks.findIndex(t => t.id === task.id);
+    if (taskIndex !== -1) {
+      updatedBoards[previousBoardIndex].tasks.splice(taskIndex, 1);
+    }
+  
+    updatedBoards[boardIndex].tasks.push(task);
+  
+    setBoards(updatedBoards);
+  
+    // Update the task with the new board ID
+    const updatedTask = { ...task, boardId: updatedBoards[boardIndex].id };
+    console.log("OnDropTask:", task.id, updatedTask); 
+    console.log("OnDropTask previous task:", task.id, task);
+  
+    try {
+      await updateTask(task.id, updatedTask);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      // Handle the error here, such as displaying a notification to the user
+    }
+  };
+  
+    
 
     useEffect(() => {
       console.log('Boards:', boards);

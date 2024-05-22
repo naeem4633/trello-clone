@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/Header';
 import Board from '../components/Board'; 
 
-const Home = ({ boards, onDropTask, tasks }) => {
+const Home = ({ boards, onDropTask }) => {
   return (
     <>
       <section className='w-full border border-black h-[100vh] p-1'>
@@ -16,9 +16,9 @@ const Home = ({ boards, onDropTask, tasks }) => {
               <div className='border border-black text-xl text-center'>
                 <p>MY BOARDS</p>
               </div>
-              <div className='w-full flex-grow flex space-x-20 items-start border border-black p-8'>
+              <div className='w-full flex-grow grid grid-cols-3 space-x-20 items-start border border-black p-8'>
                 {boards.map((board, index) => (
-                  <Board key={index} boardId={board._id} name={board.name} onDropTask={onDropTask} />
+                  <Board key={index} boardId={board.id} name={board.name} onDropTask={onDropTask} tasks={board.tasks} />
                 ))}
               </div>
             </div>
