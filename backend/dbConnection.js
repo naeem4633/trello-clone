@@ -2,24 +2,21 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_CONNECTION_STRING);
 
     console.log('MongoDB connected');
 
-    // Check if the TMUC database already exists
     const adminDB = mongoose.connection.db.admin();
     const databases = await adminDB.listDatabases();
-    const existingDB = databases.databases.find(db => db.name === 'Nearby-Search-Database');
+    const existingDB = databases.databases.find(db => db.name === 'Trello-Clone-Database');
 
-    // If TMUC database doesn't exist, create it
     if (!existingDB) {
-      await mongoose.connection.db.createCollection('Nearby-Search-Database');
-      console.log('Nearby-Search-Database created');
+      await mongoose.connection.db.createCollection('Trello-Clone-Database');
+      console.log('Trello-Clone-Database created');
     }
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    process.exit(1); // Exit process with failure
+    process.exit(1); 
   }
 };
 

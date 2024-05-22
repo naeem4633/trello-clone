@@ -1,7 +1,16 @@
 const Task = require('../models/taskModel');
+const Board = require('../models/boardModel');
 
 exports.createTask = async (req, res) => {
   try {
+    const { title, boardId } = req.body;
+
+    const existingTask = await Task.findOne({ title, boardId });
+
+    if (existingTask) {
+      return res.status(400).json({ message: 'Task with the same title already exists in this board.' });
+    }
+
     const task = new Task(req.body);
     await task.save();
     res.status(201).json(task);
@@ -54,7 +63,7 @@ exports.updateTask = async (req, res) => {
 
 exports.deleteTask = async (req, res) => {
   try {
-    const task = await Task.findByIdAndRemove(req.params.id);
+    const task = await Task.findByIdAndDelete(req.params.id);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
