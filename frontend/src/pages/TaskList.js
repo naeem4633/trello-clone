@@ -1,11 +1,10 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
-import Board from '../components/Board'; 
+import React from 'react'
+import TaskTable  from '../components/TaskTable'
+import {Link} from 'react-router-dom'
 
-const Home = ({ boards, onDropTask }) => {
+const TaskList = ({tasks, setTasks, boards}) => {
   return (
-    <>
-      <section className='w-full border border-black h-[100vh] p-1'>
+    <section className='w-full border border-black h-[100vh] p-1'>
         <div className='w-full h-full border border-black flex flex-col items-center p-1'>
           <div className='w-full h-10 border border-black'>
             <h1 className='text-2xl'>TRELLO CLONE</h1>
@@ -21,19 +20,16 @@ const Home = ({ boards, onDropTask }) => {
             </div>
             <div className='w-4/5 border border-black flex flex-col'>
               <div className='border border-black text-xl text-center'>
-                <p>MY BOARDS</p>
+                <p>MY TASKS</p>
               </div>
-              <div className='w-full flex-grow grid grid-cols-3 space-x-20 items-start border border-black p-8'>
-                {boards.map((board, index) => (
-                  <Board key={index} boardId={board.id} name={board.name} onDropTask={onDropTask} tasks={board.tasks} />
-                ))}
+              <div className='w-full flex-grow border border-black p-8'>
+                <TaskTable tasks={tasks} setTasks={setTasks} boards={boards}/>
               </div>
             </div>
           </div>
         </div>
       </section>
-    </>
-  );
-};
+  )
+}
 
-export default Home;
+export default TaskList;

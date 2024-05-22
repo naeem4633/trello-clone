@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import { useFirebase } from './context/firebase';
 import { useNavigate } from 'react-router-dom';
 import ErrorPage from './pages/ErrorPage';
+import TaskList from './pages/TaskList';
 
 function App() {
   // const [user, setUser] = useState(null);
@@ -107,6 +108,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Home boards={boards} setBoards={setBoards} tasks={tasks} setTasks={setTasks} onDropTask={onDropTask}/>} />
+            <Route path="/task-list" element={<TaskList tasks={tasks} setTasks={setTasks} boards={boards}/>} />
             <Route path="*" element={<ErrorPage/>} />
           </Routes>
         </div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 const MobileScreen = () => {
   return (
