@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import axios from 'axios';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import { useFirebase } from './context/firebase';
-import { useNavigate } from 'react-router-dom';
 import ErrorPage from './pages/ErrorPage';
 import TaskList from './pages/TaskList';
 
@@ -30,34 +28,6 @@ function App() {
   
     fetchBoardsAndTasks();
   }, []);
-
-
-  const handleTasksChange = (updatedTask) => {
-    setTasks(tasks.map(task => (task.id === updatedTask.id ? updatedTask : task)));
-  };
-
-
-  // useEffect(() => {
-  //   const initializeData = async () => {
-  //     try {
-  //       // Import mock data and send to Firestore
-  //       const { mockBoards } = require('./data');
-  //       for (const board of mockBoards) {
-  //         const boardId = await createBoard(board.name);
-  //         for (const task of board.tasks) {
-  //           await createTask(boardId, task);
-  //         }
-  //         console.log(`Successfully created board: ${board.name}`);
-  //       }
-  //       console.log('Data initialization completed successfully');
-  //     } catch (error) {
-  //       console.error('Error initializing data:', error);
-  //     }
-  //   };
-
-  //   initializeData();
-  // }, []);
-
 
   const onDropTask = async (task, boardName) => {
     const boardIndex = boards.findIndex(board => board.name === boardName);
