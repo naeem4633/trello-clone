@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Board from '../components/Board';
 import Spinner from '../components/Spinner';
 import { useFirebase } from '../context/firebase';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Home = ({ boards, onDropTask, setBoards, notification, setNotification }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -47,52 +48,54 @@ const Home = ({ boards, onDropTask, setBoards, notification, setNotification }) 
   return (
     <>
     {notification.visible && (
-        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
+        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 text-black">
           <p>{notification.message}</p>
         </div>
       )}
-      <section className='w-full h-[100vh] px-1'>
+      <section className='w-full h-[100vh] bg-[#cd5a91] text-white'>
         <div className='w-full h-full flex flex-col items-center'>
-          <div className='w-full text-2xl text-left border-b border-gray-300 flex justify-between px-2 py-2'>
-            <h1 className='font-bold'>TRELLO CLONE</h1>
-            <button className='p-2 text-black border border-gray-800 rounded hover:bg-black hover:text-white transition-all duration-200 text-sm' onClick={handleLogoutClick}>LOGOUT</button>
+          <div className='w-full text-2xl text-left flex justify-between'>
+            <h1 className='font-bold p-2'>TRELLO CLONE</h1>
+            <div onClick={handleLogoutClick} className='flex items-center justify-center hover:cursor-pointer px-2 hover:bg-[#9c446e]'>
+              <LogoutIcon/>
+            </div>
           </div>
-          <div className='w-full flex flex-col md:flex-row'>
-            <div className='w-1/5 md:w-64 border-r border-gray-300'>
-              <Link to={'/task-list'} className='w-full p-2 flex justify-start items-center border-b border-gray-300 hover:bg-gray-200 transition-all duration-150'>
+          <div className='w-full flex flex-row h-screen'>
+            <div className='w-1/5 h-full bg-[#ac4c7a] text-sm font-semibold'>
+              <Link to={'/task-list'} className='w-full p-4 flex justify-start items-center hover:bg-[#c582a2] transition-all duration-150'>
                 <p>TASK LIST</p>
               </Link>
-              <Link to={'/'} className='w-full p-2 flex justify-start items-center border-b border-gray-300 hover:bg-gray-200 transition-all duration-300'>
-                <p>BOARDS</p>
+              <Link to={'/'} className='w-full p-4 flex justify-start items-center hover:bg-[#c582a2] transition-all duration-300'>
+                <p>MY BOARDS</p>
               </Link>
             </div>
-            <div className='w-4/5 md:w-5/6 border-l border-gray-300 flex flex-col'>
-              <div className='w-full text-xl text-center border-b border-gray-300 p-2'>
+            <div className='w-5/6 flex flex-col'>
+              <div className='w-full font-semibold text-left p-4 bg-[#9c446e]'>
                 <p>MY BOARDS</p>
               </div>
               {isLoading && boards.length === 0 && (<Spinner/>)}
-              <div className='mx-auto w-1/2 flex flex-row justify-between items-center space-x-10 py-5'>
+              <div className='w-full flex-grow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4'>
+              {boards.map((board, index) => (
+                  <Board key={index} boardId={board.id} name={board.name} onDropTask={onDropTask} tasks={board.tasks} setBoards={setBoards} notification={notification} setNotification={setNotification}/>
+                ))}
+              </div>
+              <div className='mx-auto w-1/2 flex flex-row justify-between items-center space-x-4 py-6 text-sm text-black'>
                 <div className='flex-grow'>
                   <input
                     type='text'
                     placeholder='Enter board name'
                     value={newBoardName}
                     onChange={(e) => setNewBoardName(e.target.value)}
-                    className='w-full p-2 border border-gray-300 rounded-md'
+                    className='w-full p-2 px-4 rounded-md text-white placeholder:text-white focus:outline-gray-400 bg-[#ac4c7a]'
                   />
                 </div>
                 <button
                   onClick={handleAddBoard}
                   disabled={isLoading}
-                  className='w-40 p-2 text-black border border-gray-800 rounded hover:bg-black hover:text-white transition-all duration-200 disabled:opacity-50'
+                  className='w-32 p-2 text-white font-semibold hover:bg-[#9c446e] rounded  transition-all duration-200 disabled:opacity-50'
                 >
                   Add Board
                 </button>
-              </div>
-              <div className='w-full flex-grow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4'>
-              {boards.map((board, index) => (
-                  <Board key={index} boardId={board.id} name={board.name} onDropTask={onDropTask} tasks={board.tasks} setBoards={setBoards} notification={notification} setNotification={setNotification}/>
-                ))}
               </div>
             </div>
           </div>

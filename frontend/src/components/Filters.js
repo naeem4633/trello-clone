@@ -28,34 +28,34 @@ const Filters = ({ tasks, columnFilters, setColumnFilters, boards }) => {
   };
 
   return (
-    <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-100 rounded-lg shadow-md">
+    <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-100 rounded-lg shadow-md text-black">
       <div className="flex items-center space-x-2">
         <SearchIcon />
         <input
           type="text"
-          placeholder="Task name"
+          placeholder="Search by Task name"
           value={titleFilter}
           onChange={(e) => onFilterChange("title", e.target.value)}
-          className="flex-1 rounded bg-white p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 rounded bg-white px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-800"
         />
       </div>
       <div className="flex items-center space-x-2">
         <SearchIcon />
         <input
           type="text"
-          placeholder="Description"
+          placeholder="Search by Description"
           value={descriptionFilter}
           onChange={(e) => onFilterChange("description", e.target.value)}
-          className="flex-1 rounded bg-white p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 rounded bg-white px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-800"
         />
       </div>
       <div className="flex items-center space-x-2">
-        <label htmlFor="boardIdFilter" className="font-medium text-gray-700">Board:</label>
+        <label htmlFor="boardIdFilter" className="font-medium text-gray-700">Filter by Board:</label>
         <select
           id="boardIdFilter"
           value={boardIdFilter}
           onChange={onBoardIdFilterChange}
-          className="rounded bg-white p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded bg-white p-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-800"
         >
           <option value="">All</option>
           {boards.map((board) => (

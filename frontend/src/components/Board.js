@@ -23,6 +23,7 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards,  notification, set
   const handleAddTask = async () => {
     try {
       const createdAt = new Date();
+      setNotification({ message: "Adding Task...", visible: true });
       const taskId = await createTask(boardId, { ...newTask, boardId, createdAt });
       setTasksForBoard([...tasksForBoard, { id: taskId, ...newTask, createdAt }]);
       setNewTask({ title: '', description: '', dueDate: '' });
@@ -56,17 +57,17 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards,  notification, set
   return (
     <>
     {notification.visible && (
-        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
+        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 text-black">
           <p>{notification.message}</p>
         </div>
       )}
     <div
       ref={drop}
-      className={`w-72 p-4 m-2 bg-white rounded-lg shadow-md border border-gray-300 transition-colors ${isOver ? 'bg-gray-100' : ''}`}
+      className={`p-4 min-h-72 max-h-96 overflow-y-hidden bg-[#f1f2f4] rounded-lg transition-colors text-gray-600 ${isOver ? 'bg-gray-100' : ''}`}
     >
-      <div className="text-center font-bold mb-4">
+      <div className="text-left font-semibold text-sm mb-4">
         {name}
-        <DeleteIcon onClick={handleDeleteBoard} className="float-right cursor-pointer" />
+        <DeleteIcon fontSize="small" onClick={handleDeleteBoard} className="float-right cursor-pointer" />
       </div>
       <div className="flex flex-col gap-2 border border-gray-200 p-2 rounded-lg max-h-96 overflow-y-auto">
         {tasksForBoard?.map((task) => (
@@ -79,12 +80,12 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards,  notification, set
           />
         ))}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 font-semibold text-sm">
         <button
           onClick={() => setIsAddingTask(!isAddingTask)}
-          className="flex items-center justify-center w-full p-2 text-black border border-gray-800 rounded hover:bg-black hover:text-white transition-all duration-200"
+          className="flex items-center justify-start w-full p-2 rounded hover:bg-gray-300 transition-all duration-200 text-left"
         >
-          {isAddingTask ? 'Cancel' : 'Add New Task'}
+          {isAddingTask ? 'Cancel' : 'Add a Task'}
         </button>
         {isAddingTask && (
           <div className="mt-2 flex flex-col gap-2">
@@ -110,9 +111,9 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards,  notification, set
             />
             <button
               onClick={handleAddTask}
-              className="w-full p-2 text-white bg-green-500 rounded hover:bg-green-600"
+              className="w-full p-2 text-gray-600 text-center hover:bg-gray-300 rounded transition-all duration-200"
             >
-              Add Task
+              Save
             </button>
           </div>
         )}

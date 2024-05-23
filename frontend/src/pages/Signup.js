@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../authorization.css'
+import '../styles/authorization.css'
 import { useFirebase } from '../context/firebase';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,7 +37,7 @@ const Signup = ({notification, setNotification}) => {
   return (
     <>
     {notification.visible && (
-        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
+        <div className="z-50 border border-red-500 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
           <p>{notification.message}</p>
         </div>
       )}
