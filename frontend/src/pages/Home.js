@@ -4,10 +4,10 @@ import Board from '../components/Board';
 import Spinner from '../components/Spinner';
 import { useFirebase } from '../context/firebase';
 
-const Home = ({ boards, onDropTask, setBoards }) => {
+const Home = ({ boards, onDropTask, setBoards, notification, setNotification }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [newBoardName, setNewBoardName] = useState('');
-  const { createBoard } = useFirebase();
+  const { getAuth, createBoard } = useFirebase();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -29,17 +29,33 @@ const Home = ({ boards, onDropTask, setBoards }) => {
       setNewBoardName('');
     } catch (error) {
       console.error("Error creating board:", error);
+      setNotification({ message: error.message, visible: true });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleLogoutClick = async () => {
+    try {
+        await getAuth().signOut();
+        console.log("User signed out successfully");
+    } catch (error) {
+        console.error('Error logging out:', error);
+    }
+};
+
   return (
     <>
-      <section className='w-full h-[100vh] p-1'>
-        <div className='w-full h-full flex flex-col items-center p-1'>
-          <div className='w-full h-10 text-2xl text-left border-b border-gray-300'>
-            <h1>TRELLO CLONE</h1>
+    {notification.visible && (
+        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
+          <p>{notification.message}</p>
+        </div>
+      )}
+      <section className='w-full h-[100vh] px-1'>
+        <div className='w-full h-full flex flex-col items-center'>
+          <div className='w-full text-2xl text-left border-b border-gray-300 flex justify-between px-2 py-2'>
+            <h1 className='font-bold'>TRELLO CLONE</h1>
+            <button className='p-2 text-black border border-gray-800 rounded hover:bg-black hover:text-white transition-all duration-200 text-sm' onClick={handleLogoutClick}>LOGOUT</button>
           </div>
           <div className='w-full flex flex-col md:flex-row'>
             <div className='w-1/5 md:w-64 border-r border-gray-300'>
@@ -75,7 +91,7 @@ const Home = ({ boards, onDropTask, setBoards }) => {
               </div>
               <div className='w-full flex-grow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4'>
               {boards.map((board, index) => (
-                  <Board key={index} boardId={board.id} name={board.name} onDropTask={onDropTask} tasks={board.tasks} setBoards={setBoards}/>
+                  <Board key={index} boardId={board.id} name={board.name} onDropTask={onDropTask} tasks={board.tasks} setBoards={setBoards} notification={notification} setNotification={setNotification}/>
                 ))}
               </div>
             </div>

@@ -4,7 +4,7 @@ import Task from './Task';
 import { useFirebase } from '../context/firebase';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const Board = ({ name, boardId, onDropTask, tasks, setBoards}) => {
+const Board = ({ name, boardId, onDropTask, tasks, setBoards,  notification, setNotification}) => {
   const { createTask, deleteTask, deleteBoard } = useFirebase();
   const [tasksForBoard, setTasksForBoard] = useState(tasks);
   const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' });
@@ -16,6 +16,7 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards}) => {
 
   const handleDeleteTask = (taskId) => {
     setTasksForBoard(tasksForBoard.filter(t => t.id !== taskId));
+    setNotification({ message: "Task Deleted", visible: true });
     deleteTask(taskId);
   };
 
@@ -28,6 +29,7 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards}) => {
       setIsAddingTask(false);
     } catch (error) {
       console.error("Error creating task:", error);
+      setNotification({ message: error.message, visible: true });
     }
   };
 
@@ -41,15 +43,23 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards}) => {
 
   const handleDeleteBoard = async () => {
     try {
+      setNotification({ message: "Deleting board...", visible: true });
       await deleteBoard(boardId);
       setTasksForBoard([]);
       setBoards(prevBoards => prevBoards.filter(b => b.id !== boardId)); 
     } catch (error) {
       console.error("Error deleting board:", error);
+      setNotification({ message: error.message, visible: true });
     }
   };
 
   return (
+    <>
+    {notification.visible && (
+        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
+          <p>{notification.message}</p>
+        </div>
+      )}
     <div
       ref={drop}
       className={`w-72 p-4 m-2 bg-white rounded-lg shadow-md border border-gray-300 transition-colors ${isOver ? 'bg-gray-100' : ''}`}
@@ -108,6 +118,7 @@ const Board = ({ name, boardId, onDropTask, tasks, setBoards}) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

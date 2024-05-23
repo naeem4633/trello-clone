@@ -4,7 +4,7 @@ import '../authorization.css'
 import { useFirebase } from '../context/firebase';
 import { useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+const Signup = ({notification, setNotification}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -23,56 +23,24 @@ const Signup = () => {
         return unsubscribe;
     }, [firebase]);
 
-    const convertAnonymousToPermanentEmailPassword = async () => {
-      try {
-          await firebase.convertAnonymousToPermanentEmailPassword(email, password);
-          console.log('Anonymous user converted to permanent with email and password');
-          navigate('/');
-      } catch (error) {
-          console.error('Error converting anonymous user to permanent:', error.message);
-      }
-  };
-
-  const convertAnonymousToPermanentGoogle = async () => {
-    try {
-        // Check if the user is anonymous before proceeding
-        if (user && user.isAnonymous) {
-            console.log("anon user" , user)
-            await firebase.convertAnonymousToPermanentGoogle();
-            console.log('Anonymous user converted to permanent with Google');
-        } else {
-            console.log('User is not anonymous. Cannot upgrade.');
-        }
-    } catch (error) {
-        console.log('Error converting anonymous user to permanent with Google:', error);
-    }
-};
-
     const handleSignup = async () => {
         try {
           await firebase.signupUserWithEmailAndPassword(email, password);
-          // Handle successful signup
           console.log('Signup successful');
           navigate('/');
         } catch (error) {
-          // Handle signup error
           console.error('Error signing up:', error.message);
-        }
-      };
-      
-      const handleSigninWithGoogle = async () => {
-        try {
-          await firebase.signinWithGoogle();
-          // Handle successful signup
-          console.log('Signup successful');
-          navigate('/');
-        } catch (error) {
-          // Handle signup error
-          console.error('Error signing up:', error.message);
+          setNotification({ message: error.message, visible: true });
         }
       };
 
   return (
+    <>
+    {notification.visible && (
+        <div className="border border-gray-200 w-fit absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-1 text-sm transition-all duration-500 custom-shadow-1">
+          <p>{notification.message}</p>
+        </div>
+      )}
     <section className='w-full relative tracking-wide min-h-[80vh] flex justify-center items-center'>
         <form className="authorization-form">
 
@@ -92,29 +60,13 @@ const Signup = () => {
             <input type="password" id="password" name="password" className="authorization-input" placeholder="Enter your Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg>
           </div>
-        
-        <button type='button' className="authorization-button-submit transition-all duration-200" onClick={user && user.isAnonymous ? convertAnonymousToPermanentEmailPassword : handleSignup}>Sign Up</button>
-        <p className="authorization-p">Already have an account? 
-        <span className="authorization-span"><Link to={'/login'}>Sign In</Link></span>
-
-        </p><p className="authorization-p line">Or Sign in with</p>
-
-            <div className='flex flex-col'>
-              <div className="authorization-flex-row">
-                <button type='button' className="authorization-btn google" onClick={user && user.isAnonymous ? convertAnonymousToPermanentGoogle : handleSigninWithGoogle}>
-                <svg version="1.1" width="20" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" xmlSpace="preserve">
-                  <path style={{ fill: '#FBBB00' }} d="M113.47,309.408L95.648,375.94l-65.139,1.378C11.042,341.211,0,299.9,0,256c0-42.451,10.324-82.483,28.624-117.732h0.014l57.992,10.632l25.404,57.644c-5.317,15.501-8.215,32.141-8.215,49.456C103.821,274.792,107.225,292.797,113.47,309.408z"></path>
-                  <path style={{ fill: '#518EF8' }} d="M507.527,208.176C510.467,223.662,512,239.655,512,256c0,18.328-1.927,36.206-5.598,53.451c-12.462,58.683-45.025,109.925-90.134,146.187l-0.014-0.014l-73.044-3.727l-10.338-64.535c29.932-17.554,53.324-45.025,65.646-77.911h-136.89V208.176h138.887L507.527,208.176L507.527,208.176z"></path>
-                  <path style={{ fill: '#28B446' }} d="M416.253,455.624l0.014,0.014C372.396,490.901,316.666,512,256,512c-97.491,0-182.252-54.491-225.491-134.681l82.961-67.91c21.619,57.698,77.278,98.771,142.53,98.771c28.047,0,54.323-7.582,76.87-20.818L416.253,455.624z"></path>
-                  <path style={{ fill: '#F14336' }} d="M419.404,58.936l-82.933,67.896c-23.335-14.586-50.919-23.012-80.471-23.012c-66.729,0-123.429,42.957-143.965,102.724l-83.397-68.276h-0.014C71.23,56.123,157.06,0,256,0C318.115,0,375.068,22.126,419.404,58.936z"></path>
-                </svg>
-                  Google 
-                </button>
-
-              </div>
-            </div>
+          <button type='button' className="authorization-button-submit transition-all duration-200" onClick={handleSignup}>Sign Up</button>
+          <p className="authorization-p">Already have an account? 
+            <span className="authorization-span"><Link to={'/login'}>Sign In</Link></span>
+          </p>
           </form>
     </section>
+    </>
   )
 }
 
